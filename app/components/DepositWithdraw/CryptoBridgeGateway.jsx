@@ -13,9 +13,12 @@ class CryptoBridgeGateway extends React.Component {
     constructor(props) {
         super();
 
+        const action = props.viewSettings.get(`${props.provider}Action`, "deposit");
+        const activeCoin = this._getActiveCoin(props, {action});
+
         this.state = {
-            activeCoin: this._getActiveCoin(props, {action: "deposit"}),
-            action: props.viewSettings.get(`${props.provider}Action`, "deposit")
+            action,
+            activeCoin
         };
     }
 
@@ -27,7 +30,7 @@ class CryptoBridgeGateway extends React.Component {
 			firstTimeCoin = 'BCO';
 		}
 		if ((props.provider == 'cryptobridge') && (state.action == 'withdraw')) {
-			firstTimeCoin = 'BRIDGE.BCO';
+			firstTimeCoin = 'BCO';
 		}
         let activeCoin = cachedCoin ? cachedCoin : firstTimeCoin;
         console.log('Active COIN = ', activeCoin);

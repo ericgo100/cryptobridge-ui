@@ -191,6 +191,21 @@ class AccountOverview extends React.Component {
         });
     }
 
+    _forwardToDepositWithdraw(action, asset, e) {
+        e.preventDefault();
+
+        const provider = "cryptobridge"; // TODO should be a project setting
+
+        asset = asset.split(".").pop();
+
+        // Lazy hack to set default withdraw action & coin
+        SettingsActions.changeViewSetting({[`${provider}Action`]: action});
+        SettingsActions.changeViewSetting({[`activeCoin_${provider}_deposit`]: asset});
+        SettingsActions.changeViewSetting({[`activeCoin_${provider}_withdraw`]: asset});
+
+        this.props.router.push('/deposit-withdraw');
+    }
+
     _getSeparator(render) {
         return render ? <span>&nbsp;|&nbsp;</span> : null;
     }
@@ -303,7 +318,7 @@ class AccountOverview extends React.Component {
                     <td>
                         {canDepositWithdraw && this.props.isMyAccount? (
                             <span>
-                                <a onClick={this._showDepositWithdraw.bind(this, "deposit_modal", assetName, false)}>
+                                <a onClick={this._forwardToDepositWithdraw.bind(this, "deposit", assetName)}>
                                     <Icon name="deposit" className="icon-14px" />
                                 </a>
                             </span>
@@ -312,7 +327,7 @@ class AccountOverview extends React.Component {
                     <td>
                         {canWithdraw && this.props.isMyAccount? (
                             <span>
-                                <a className={!canWithdraw ? "disabled" : ""} onClick={canWithdraw ? this._showDepositWithdraw.bind(this, "withdraw_modal", assetName, false) : () => {}}>
+                                <a className={!canWithdraw ? "disabled" : ""} onClick={canWithdraw ? this._forwardToDepositWithdraw.bind(this, "withdraw", assetName) : () => {}}>
                                     <Icon name="withdraw" className="icon-14px" />
                                 </a>
                             </span>
