@@ -92,7 +92,7 @@ class WithdrawModalCryptoBridge extends React.Component {
         this.setState({
             withdraw_amount: amount,
             empty_withdraw_value: amount !== undefined && !parseFloat(amount),
-            insufficient: this.state.feeAmount && amount >= 0.00001 && amount < (this.state.feeAmount.getAmount({real: true}) + parseFloat(this.props.transactionFee, 10))
+            insufficient_funds_for_fees: this.state.feeAmount && amount >= 0.00001 && amount < (this.state.feeAmount.getAmount({real: true}) + parseFloat(this.props.transactionFee, 10))
         }, this._checkBalance);
     }
 
@@ -175,7 +175,7 @@ class WithdrawModalCryptoBridge extends React.Component {
 
     onSubmit() {
 
-        if ((!this.state.withdraw_address_check_in_progress) && (this.state.withdraw_address && this.state.withdraw_address.length) && (this.state.withdraw_amount !== null)) {
+        if (!this.state.insufficient_funds_for_fees && (!this.state.withdraw_address_check_in_progress) && (this.state.withdraw_address && this.state.withdraw_address.length) && (this.state.withdraw_amount !== null)) {
             if (!this.state.withdraw_address_is_valid) {
 				ZfApi.publish(this.getWithdrawModalId(), "open");
 	        } else if (parseFloat(this.state.withdraw_amount) > 0){
@@ -447,7 +447,7 @@ class WithdrawModalCryptoBridge extends React.Component {
                         display_balance={balance}
                     />
                     {this.state.empty_withdraw_value ? <p className="has-error no-margin" style={{paddingTop: 10}}><Translate content="transfer.errors.valid" /></p>:null}
-                    {this.state.insufficient ? <p className="has-error no-margin" style={{paddingTop: 10}}><Translate content="transfer.errors.amountTooLow" /></p>:null}
+                    {this.state.insufficient_funds_for_fees ? <p className="has-error no-margin" style={{paddingTop: 10}}><Translate content="transfer.errors.amountTooLow" /></p>:null}
 
 
                 </div>
