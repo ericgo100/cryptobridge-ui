@@ -94,7 +94,7 @@ class BuySell extends React.Component {
             precision: quote.get("precision")
         });
         const quoteFee = !amount ? 0 : Math.min(maxQuoteMarketFee.getAmount({real: true}), amount * quote.getIn(["options", "market_fee_percent"]) / 10000);
-        const baseFee = !amount ? 0 : Math.min(maxBaseMarketFee.getAmount({real: true}), total * base.getIn(["options", "market_fee_percent"]) / 10000);
+        const baseFee = !amount ? 0 : Math.min(maxBaseMarketFee.getAmount({real: true}), (total || 0) * base.getIn(["options", "market_fee_percent"]) / 10000);
         const baseFlagBooleans = assetUtils.getFlagBooleans(base.getIn(["options", "flags"]), base.has("bitasset_data_id"));
         const quoteFlagBooleans = assetUtils.getFlagBooleans(quote.getIn(["options", "flags"]), quote.has("bitasset_data_id"));
 
@@ -167,8 +167,11 @@ class BuySell extends React.Component {
         //     balanceAmount = 0;
         // }
         const isBid = type === "bid";
+        const realBalanceAmount = balanceAmount.getAmount({real: true});
+        const showFeeAmount = amount > 0 && price > 0;
+
         let marketFee = isBid && quoteMarketFee ? quoteMarketFee : !isBid && baseMarketFee ? baseMarketFee : null;
-        let hasBalance = isBid ? balanceAmount.getAmount({real: true}) >= parseFloat(total) : balanceAmount.getAmount({real: true}) >= parseFloat(amount);
+        let hasBalance = isBid ? realBalanceAmount >= parseFloat(total) : realBalanceAmount >= parseFloat(amount);
 
         let buttonText = isPredictionMarket ? counterpart.translate("exchange.short") : isBid ? counterpart.translate("exchange.buy") : counterpart.translate("exchange.sell");
         let forceSellText = isBid ? counterpart.translate("exchange.buy") : counterpart.translate("exchange.sell");
@@ -274,7 +277,7 @@ class BuySell extends React.Component {
                                         <Translate content="transfer.fee" />:
                                     </div>
                                     <div className="grid-block small-5 no-margin no-overflow buy-sell-input">
-                                        <input className={!hasFeeBalance ? "no-balance" : ""} disabled type="text" id="fee" value={!hasFeeBalance ? counterpart.translate("transfer.errors.insufficient") : fee.getAmount({real: true})} autoComplete="off"/>
+                                        <input className={!hasFeeBalance && showFeeAmount && realBalanceAmount > 0 ? "no-balance" : ""} disabled type="text" id="fee" value={!hasFeeBalance && showFeeAmount && realBalanceAmount > 0 ? counterpart.translate("transfer.errors.insufficient") : showFeeAmount ? fee.getAmount({real: true}) : 0} autoComplete="off"/>
                                     </div>
 
                                     <div className="grid-block small-4 no-margin no-overflow buy-sell-box" style={{paddingLeft: feeAssets.length !== 1 ? 0 : 5}}>
