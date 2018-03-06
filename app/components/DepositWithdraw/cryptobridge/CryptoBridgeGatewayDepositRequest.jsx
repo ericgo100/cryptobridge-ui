@@ -1,4 +1,6 @@
 import React from "react";
+import {CopyToClipboard} from "react-copy-to-clipboard";
+import { QRCode } from 'react-qr-svg';
 import Translate from "react-translate-component";
 import {ChainStore} from "bitsharesjs/es";
 import ChainTypes from "components/Utility/ChainTypes";
@@ -55,17 +57,6 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
 
         this.addDepositAddress = this.addDepositAddress.bind(this);
         this.requestNewDepositAddress = this.requestNewDepositAddress.bind(this);
-        this._copy = this._copy.bind(this);
-        document.addEventListener("copy", this._copy);
-    }
-
-    _copy(e) {
-        try {
-            e.clipboardData.setData("text/plain", this.state.clipboardText);
-            e.preventDefault();
-        } catch(err) {
-            console.error(err);
-        }
     }
 
     _getDepositObject() {
@@ -101,10 +92,6 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
         }
     }
 
-    componentWillUnmount() {
-        document.removeEventListener("copy", this._copy);
-    }
-
     addDepositAddress( receive_address ) {
         let account_name = this.props.account.get("name");
         try {
@@ -125,18 +112,6 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
     onWithdraw() {
         ZfApi.publish(this.getWithdrawModalId(), "open");
     }
-
-    toClipboard(clipboardText) {
-        try {
-            this.setState({clipboardText}, () => {
-                document.execCommand("copy");
-            });
-        } catch(err) {
-            console.error(err);
-        }
-    }
-
-
 
     generateDepositAddress(deposit_address_fragment, deposit_memo, memoText, clipboardText ) {
 
@@ -160,6 +135,7 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
 
 
         } else {
+
             return (
                 <div style={{padding: "10px 0", fontSize: "1.1rem", fontWeight: "bold"}}>
                     <table className="table">
@@ -174,13 +150,28 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
                         </tbody>
                     </table>
                     <div className="button-group" style={{paddingTop: 10}}>
-                        {deposit_address_fragment ? <div className="button" onClick={this.toClipboard.bind(this, clipboardText)}><Translate content="gateway.copy_address" /></div> : null}
-                        {memoText ? <div className="button" onClick={this.toClipboard.bind(this, memoText)}>Copy memo</div> : null}
+                        {deposit_address_fragment &&
+                            <CopyToClipboard text={clipboardText}>
+                                <div className="button"><Translate content="gateway.copy_address" /></div>
+                            </CopyToClipboard>
+                        }
+                        {memoText &&
+                            <CopyToClipboard text={memoText}>
+                                <div className="button">Copy memo</div>
+                            </CopyToClipboard>
+                        }
                         <button className={"button"} onClick={this.requestNewDepositAddress}><Translate content="gateway.generate_new" /></button>
                     </div>
+                    {deposit_address_fragment && !memoText && clipboardText &&
+                        <div>
+                            <QRCode
+                                value={clipboardText}
+                                style={{ width: 256, padding: 10, backgroundColor: "#fff" }}
+                            />
+                        </div>
+                    }
                 </div>
             );
-
         }
 
     }
