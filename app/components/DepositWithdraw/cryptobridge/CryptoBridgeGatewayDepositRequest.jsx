@@ -36,8 +36,13 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
         deprecated_in_favor_of: ChainTypes.ChainAsset,
         deprecated_message: React.PropTypes.string,
         action: React.PropTypes.string,
-        supports_output_memos: React.PropTypes.bool.isRequired
+        supports_output_memos: React.PropTypes.bool.isRequired,
+        required_confirmations: React.PropTypes.number
     };
+
+    static defaultProps = {
+        required_confirmations: 0
+    }
 
     constructor(props) {
         super(props);
@@ -284,6 +289,13 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
         }
 
         if (this.props.action === "deposit") {
+
+            const depositRightCellStyle = {
+                fontWeight: "bold",
+                color: "#4A90E2",
+                textAlign: "right"
+            };
+
             return (
                 <div className="Blocktrades__gateway grid-block no-padding no-margin">
                     <div className="small-12 medium-5">
@@ -293,15 +305,15 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
                                 <tbody>
                                     <tr>
                                         <Translate component="td" content="gateway.asset_to_deposit" />
-                                        <td style={{fontWeight: "bold", color: "#4A90E2", textAlign: "right"}}>{this.renameAssets(this.props.deposit_asset)}</td>
+                                        <td style={depositRightCellStyle}>{this.renameAssets(this.props.deposit_asset)}</td>
                                     </tr>
                                     <tr>
                                         <Translate component="td" content="gateway.your_account" />
-                                        <td style={{fontWeight: "bold", color: "#4A90E2", textAlign: "right"}}><LinkToAccountById account={this.props.account.get("id")} /></td>
+                                        <td style={depositRightCellStyle}><LinkToAccountById account={this.props.account.get("id")} /></td>
                                     </tr>
                                     <tr>
                                         <td><Translate content="gateway.balance" />:</td>
-                                        <td style={{fontWeight: "bold", color: "#4A90E2", textAlign: "right"}}>
+                                        <td style={depositRightCellStyle}>
                                             <AccountBalance
                                                 account={this.props.account.get("name")}
                                                 asset={this.props.receive_asset.get("symbol")}
@@ -309,6 +321,14 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
                                             />
                                         </td>
                                     </tr>
+                                    {this.props.required_confirmations &&
+                                        <tr>
+                                            <td><Translate content="gateway.required_confirmations" />:</td>
+                                            <td style={depositRightCellStyle}>
+                                                {this.props.required_confirmations}
+                                            </td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>

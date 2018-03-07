@@ -123,7 +123,8 @@ export function getBackedCoins({allCoins, tradingPairs, backer}) {
                 transactionFee: coin_type.transactionFee,
                 supportsMemos: coins_by_type[coin_type.backingCoinType].supportsOutputMemos,
                 depositAllowed: isDepositAllowed,
-                withdrawalAllowed: isWithdrawalAllowed
+                withdrawalAllowed: isWithdrawalAllowed,
+                requiredConfirmations: coins_by_type[coin_type.backingCoinType].requiredConfirmations
             });
         }});
     return blocktradesBackedCoins;
