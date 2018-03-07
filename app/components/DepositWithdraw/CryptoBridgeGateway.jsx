@@ -8,6 +8,7 @@ import { RecentTransactions, TransactionWrapper } from "components/Account/Recen
 import Immutable from "immutable";
 import cnames from "classnames";
 import LoadingIndicator from "../LoadingIndicator";
+import { cryptoBridgeAPIs } from "../../api/apiConfig";
 
 class CryptoBridgeGateway extends React.Component {
     constructor(props) {
@@ -171,7 +172,7 @@ class CryptoBridgeGateway extends React.Component {
                             symbol={coin.symbol}
                             required_confirmations={coin.requiredConfirmations}
                             action={this.state.action}
-                            url={'https://api.crypto-bridge.org/api/v1'}
+                            url={cryptoBridgeAPIs.BASE}
                         />
                         <label className="left-label">Support</label>
                         <div><Translate content="gateway.support_block_cb" /><br /><br /><a href={"mailto:" + issuer.support}>{issuer.support}</a></div>

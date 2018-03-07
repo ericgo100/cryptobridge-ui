@@ -14,7 +14,7 @@ import AccountStore from "stores/AccountStore";
 import SettingsStore from "stores/SettingsStore";
 import SettingsActions from "actions/SettingsActions";
 import { Apis } from "bitsharesjs-ws";
-import { settingsAPIs, rudexAPIs } from "api/apiConfig";
+import { cryptoBridgeAPIs, settingsAPIs, rudexAPIs } from "api/apiConfig";
 import BitKapital from "../DepositWithdraw/BitKapital";
 import RuDexGateway from "../DepositWithdraw/rudex/RuDexGateway";
 import GatewayStore from "stores/GatewayStore";
@@ -251,9 +251,9 @@ class DepositStoreWrapper extends React.Component {
     componentWillMount() {
         if (Apis.instance().chain_id.substr(0, 8) === "4018d784") { // Only fetch this when on BTS main net
             GatewayActions.fetchCoins.defer({backer: "BRIDGE",
-                url: 'https://api.crypto-bridge.org/api/v1/coins',
-                walletUrl: 'https://api.crypto-bridge.org/api/v1/wallets',
-                tradingPairsUrl: 'https://api.crypto-bridge.org/api/v1'
+                url: cryptoBridgeAPIs.BASE + cryptoBridgeAPIs.COINS_LIST,
+                walletUrl: cryptoBridgeAPIs.BASE + cryptoBridgeAPIs.ACTIVE_WALLETS,
+                tradingPairsUrl: cryptoBridgeAPIs.BASE
             }); // Blocktrades
         }
     }

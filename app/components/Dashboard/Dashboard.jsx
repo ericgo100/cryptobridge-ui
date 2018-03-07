@@ -10,6 +10,7 @@ import LoadingIndicator from "../LoadingIndicator";
 import LoginSelector from "../LoginSelector";
 import cnames from "classnames";
 import SettingsActions from "actions/SettingsActions";
+import { cryptoBridgeAPIs } from "../../api/apiConfig";
 
 class Dashboard extends React.Component {
 
@@ -55,7 +56,7 @@ class Dashboard extends React.Component {
 
         window.addEventListener("resize", this._setDimensions, {capture: false, passive: true});
 
-        const url = 'https://api.crypto-bridge.org/api/v1/markets';
+        const url = cryptoBridgeAPIs.BASE + cryptoBridgeAPIs.MARKETS;
 
         fetch(url).then(reply => reply.json().then(result => {
             let markets = [];

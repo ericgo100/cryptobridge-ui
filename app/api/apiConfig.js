@@ -17,9 +17,10 @@ export const rudexAPIs = {
 };
 
 export const cryptoBridgeAPIs = {
-    BASE: "https://api.crypto-bridge.org/api/v1",
+    BASE: "https://api." + (__TESTNET__ ? "testnet." : "") +"crypto-bridge.org/api/v1",
     COINS_LIST: "/coins",
     ACTIVE_WALLETS: "/wallets",
+    MARKETS: "/markets",
     TRADING_PAIRS: "/trading-pairs",
 };
 
@@ -47,6 +48,6 @@ export const settingsAPIs = {
        {url: "wss://api.bts.blckchnd.com", location: "Germany"}
    ],
     DEFAULT_FAUCET: "https://api.crypto-bridge.org",
-    TESTNET_FAUCET: "https://faucet.testnet.bitshares.eu",
+    TESTNET_FAUCET: "https://api.testnet.crypto-bridge.org",
     RPC_URL: "https://openledger.info/api/"
 };
