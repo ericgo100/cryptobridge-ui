@@ -516,6 +516,16 @@ class MyMarkets extends React.Component {
         let {activeMarketTab, activeTab, lookupQuote, lookupBase} = this.state;
         let otherMarkets = <tr></tr>;
         const myMarketTab = activeTab === "my-market";
+        const isFilteredMarket = (m) => {
+            const ID = m.quote + "_" + m.base;
+            if (!!this.state.myMarketFilter) {
+                return m.quote.replace('BRIDGE.', '').indexOf(this.state.myMarketFilter) !== -1;
+            }
+            if (onlyStars && !starredMarkets.has(ID)) {
+                return false;
+            }
+            return true;
+        };
 
         let defaultBases = preferredBases.map(a => a);
 
@@ -630,20 +640,13 @@ class MyMarkets extends React.Component {
 
         if (activeMarkets.size > 0) {
             otherMarkets = activeMarkets
-            .filter(a => {
+            .filter(m => {
                 if (!myMarketTab) {
                     if (lookupQuote.length < 1) {return false; }
 
-                    return a.quote.indexOf(lookupQuote) !== -1;
+                    return m.quote.indexOf(lookupQuote) !== -1;
                 } else {
-                    const ID = a.quote + "_" + a.base;
-                    if (!!this.state.myMarketFilter) {
-                        return ID.indexOf(this.state.myMarketFilter) !== -1;
-                    }
-                    if (onlyStars && !starredMarkets.has(ID)) {
-                        return false;
-                    }
-                    return true;
+                    return isFilteredMarket(m);
                 }
             })
             .map(market => {
@@ -686,29 +689,28 @@ class MyMarkets extends React.Component {
         let btsMarkets = [];
         let myOtherMarkets = [];
 
-
-
-        this.state.markets && this.state.markets.map((m) => {
+        this.state.markets && this.state.markets
+            .filter(isFilteredMarket)
+            .map((m) => {
                 if (m.base === 'BRIDGE.BTC') {
                     btcMarkets.push(m);
                 }
                 else if (m.base === 'BTS') {
                     btsMarkets.push(m);
 
-                } else {
-                    myOtherMarkets.push(m);
-                }
-
-        })
+            } else {
+                myOtherMarkets.push(m);
+            }
+        });
 
         baseGroups['OTHER'] = [];
         baseGroups['OTHER'] =  myOtherMarkets;
 
         baseGroups['BRIDGE.BTC'] = [];
-        baseGroups['BRIDGE.BTC'] =  btcMarkets
+        baseGroups['BRIDGE.BTC'] =  btcMarkets;
 
         baseGroups['BTS'] = [];
-        baseGroups['BTS'] =  btsMarkets
+        baseGroups['BTS'] =  btsMarkets;
 
 
         const hasOthers = otherMarkets && otherMarkets.length;
@@ -736,6 +738,23 @@ class MyMarkets extends React.Component {
                     </div> ) : null}
 
 
+                <div className="grid-block shrink" style={{width: "100%", textAlign: "left", padding: "0.75rem 0.5rem"}}>
+                    <label className="no-margin">
+                        <input style={{position: "relative", top: 3}} className="no-margin" type="checkbox" checked={this.props.onlyStars} onChange={() => {MarketsActions.toggleStars();}}/>
+                        <span>&nbsp;<Translate content="exchange.show_star_1" /><Icon className="gold-star" name="fi-star"/> <Translate content="exchange.show_star_2" /></span>
+                    </label>
+                    <div className="float-right" style={{paddingLeft: 20}}>
+                        <input
+                            style={{fontSize: "0.9rem", height: "inherit", position: "relative", top: 1, padding: 2}}
+                            className="no-margin"
+                            type="text"
+                            placeholder="Filter"
+                            maxLength="16"
+                            value={this.state.myMarketFilter}
+                            onChange={(e) => {this.setState({myMarketFilter: e.target.value && e.target.value.toUpperCase()});}}
+                        />
+                    </div>
+                </div>
 
                 <ul className="mymarkets-tabs">
                     {preferredBases.map((base, index) => {
