@@ -1361,6 +1361,7 @@
     "symbol": "Symbol",
     "website": "Visit the website",
     "deposit_to": "Please send your %(asset)s to the address below",
+    "required_confirmations": "Required confirmations for deposit to be credited",
     "add_funds": "Quickly and easily add funds to your CryptoBridge account <strong>%(account)s</strong>.",
     "withdraw_funds": "You are going to withdraw funds from your CryptoBridge account to your external %(asset)s account.",
     "balance_asset": "Current %(asset)s balance",

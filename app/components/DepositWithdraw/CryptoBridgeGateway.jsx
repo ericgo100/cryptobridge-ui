@@ -169,6 +169,7 @@ class CryptoBridgeGateway extends React.Component {
                             supports_output_memos={coin.supportsMemos}
                             transactionFee={coin.transactionFee}
                             symbol={coin.symbol}
+                            required_confirmations={coin.requiredConfirmations}
                             action={this.state.action}
                             url={'https://api.crypto-bridge.org/api/v1'}
                         />
