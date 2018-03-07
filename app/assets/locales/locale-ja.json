@@ -1362,6 +1362,7 @@
     "symbol": "シンボル",
     "website": "ウェブサイトに行く",
     "deposit_to": "%(asset)sを以下のアドレスに送ってください。",
+    "required_confirmations": "入金残高反映に必要な確認回数",
     "add_funds": "あなたのCryptoBridgeアカウント<strong>%(account)s</strong>に素早く簡単に資金を追加します。",
     "withdraw_funds": "CryptoBridgeアカウントから外部の%(asset)sアカウントへ出金しようとしています。",
     "balance_asset": "現在の%(asset)s残高",
