@@ -41,7 +41,7 @@ const WSS_PROD_NODES = [
     {url: "wss://ap-southeast-1.bts.crypto-bridge.org", location: "Singapore"},
     {url: "wss://ap-southeast-2.bts.crypto-bridge.org", location: "Sydney, Australia"},
     {url: "wss://eu-west-1.bts.crypto-bridge.org", location:  "Ireland"},
-    {url: "wss://eu-central-1.bts.crypto-bridge.org", location: "Frankfurt, Germany"}
+    {url: "wss://eu-central-1.bts.crypto-bridge.org", location: "Frankfurt, Germany"},
 ];
 
 export const settingsAPIs = {

@@ -63,7 +63,7 @@ class ApiNode extends React.Component {
         * The testnet latency is not checked in the connection manager,
         * so we force enable activation of it even though it shows as 'down'
         */
-        const isTestnet = url === testnetAPI.url;
+        const isTestnet = url === testnetAPI && testnetAPI.url;
 
         var Status =  (isTestnet && !ping) ? null : <div className="api-status" style={{position: "absolute", textAlign: "right", right: "1em", top: "0.5em"}}>
          <Translate style={{color: up ? green : red, marginBottom: 0}} component="h3" content={"settings." + (up ? "node_up" : "node_down")} />
@@ -132,6 +132,10 @@ class AccessSettings extends React.Component {
             }
         }
 
+        if (!index) {
+            return 'wss://fake.automatic-selection.com';
+        }
+
         return index;
     }
 
@@ -144,6 +148,10 @@ class AccessSettings extends React.Component {
 
     getNode(node){
         const { props } = this;
+
+        if (!node) {
+            node = { url: 'wss://fake.automatic-selection.com', location: 'Automatic selection' };
+        }
 
         return {
             name: node.location || "Unknown location",
@@ -197,7 +205,7 @@ class AccessSettings extends React.Component {
         }
 
         nodes = nodes.slice(0, currentNodeIndex).concat(nodes.slice(currentNodeIndex+1)).sort(function(a,b){
-            let isTestnet = a.url === testnetAPI.url;
+            let isTestnet = a.url === testnetAPI && testnetAPI.url;
             if(a.url == autoSelectAPI){
                 return -1;
             } else if(a.up && b.up){

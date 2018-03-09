@@ -90,6 +90,22 @@ const willTransitionTo = (nextState, replaceState, callback, appInit=true) => { 
     */
     let connectionString = SettingsStore.getSetting("apiServer");
     if (!connectionString) connectionString = urls[0].url;
+
+
+    const myNodes = SettingsStore.getState().defaults.apiServer;
+
+    let found=0;
+    myNodes.map((i) => {
+        if (i.url === connectionString) {
+            found=1;
+        }
+    })
+
+    if (found === 0) {
+        // Disregard nodes that we don't know and set to automatic selection
+        connectionString = 'wss://fake.automatic-selection.com';
+    }
+
     /* Don't use an insecure websocket url when using secure protocol */
     if (window.location.protocol === "https:" && connectionString.indexOf("ws://") !== -1) {
         connectionString = urls[0];
