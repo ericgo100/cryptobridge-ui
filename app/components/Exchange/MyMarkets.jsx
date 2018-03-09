@@ -21,6 +21,7 @@ import AssetSelector from "../Utility/AssetSelector";
 import counterpart from "counterpart";
 import LoadingIndicator from "../LoadingIndicator";
 import {ChainValidation} from "bitsharesjs/es";
+import { cryptoBridgeAPIs } from "../../api/apiConfig";
 
 let lastLookup = new Date();
 
@@ -334,7 +335,7 @@ class MyMarkets extends React.Component {
             this._lookupAssets("BRIDGE.", true);
         }
 
-        const url = 'https://api.crypto-bridge.org/api/v1/markets';
+        const url = cryptoBridgeAPIs.BASE + cryptoBridgeAPIs.MARKETS;
 
         const defaultMarkets = [
             {
