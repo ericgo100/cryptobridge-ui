@@ -245,7 +245,9 @@ class Exchange extends React.Component {
         }
 
         function hasFeePoolBalance(id) {
-            return feeStatus[id] && feeStatus[id].hasPoolBalance;
+            // Tmp fix
+            return true;
+//            return feeStatus[id] && feeStatus[id].hasPoolBalance;
         }
 
         function hasBalance(id) {
@@ -420,7 +422,6 @@ class Exchange extends React.Component {
             setting[marketID] = !inverted;
             SettingsActions.changeMarketDirection(setting);
         }
-        console.log("order:", JSON.stringify(order.toObject()));
         return MarketsActions.createLimitOrder2(order).then((result) => {
             if (result.error) {
                 if (result.error.message !== "wallet locked")
@@ -731,7 +732,6 @@ class Exchange extends React.Component {
 
     onChangeChartHeight({value, increase}) {
         const newHeight = value ? value : this.state.chartHeight + (increase ? 20 : -20);
-        console.log("newHeight", newHeight);
         this.setState({
             chartHeight: newHeight
         });
