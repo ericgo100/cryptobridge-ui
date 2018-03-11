@@ -177,8 +177,15 @@ class BuySell extends React.Component {
         let forceSellText = isBid ? counterpart.translate("exchange.buy") : counterpart.translate("exchange.sell");
 
         let noBalance = isPredictionMarket ? false : !(balanceAmount.getAmount() > 0 && hasBalance);
-        let invalidPrice = !(price > 0.00000001); // TODO needs to be done in API, but prevents low price market matching exploit in GUI
+        //let invalidPrice = !(price > 0.00000006); // TODO needs to be done in API, but prevents low price market matching exploit in GUI
+        let invalidPrice = !(price > 0);
         let invalidAmount = !(amount > 0.00000001);
+
+
+        if (total && total > 0) {
+            invalidAmount = !(total > 0.00000002);
+        }
+        //console.log('invalidamount= ' + invalidAmount + ' ' + f);
 
         let disabled = noBalance || invalidPrice || invalidAmount;
 
