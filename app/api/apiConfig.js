@@ -42,6 +42,17 @@ const WSS_PROD_NODES = [
     {url: "wss://ap-southeast-2.bts.crypto-bridge.org", location: "Sydney, Australia"},
     {url: "wss://eu-west-1.bts.crypto-bridge.org", location:  "Ireland"},
     {url: "wss://eu-central-1.bts.crypto-bridge.org", location: "Frankfurt, Germany"},
+    {url: "wss://ap-south-1.bts.crypto-bridge.org", location: "Mumbai, India"},
+    {url: "wss://ca-central-1.bts.crypto-bridge.org", location: "Montreal, Canada"},
+    {url: "wss://eu-west-2.bts.crypto-bridge.org/", location: "London, United Kingdom"},
+    {url: "wss://eu-west-3.bts.crypto-bridge.org/", location: "Paris, France"},
+    {url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany"},
+    {url: "wss://eu.openledger.info/ws", location: "Berlin, Germany"},
+    {url: "wss://bit.btsabc.org/ws", location: "Hong Kong"},
+    {url: "wss://bts.transwiser.com/ws", location: "Hangzhou, China"},
+    {url: "wss://bitshares.dacplay.org:8089/ws", location:  "Hangzhou, China"},
+    {url: "wss://openledger.hk/ws", location: "Hong Kong"},
+    {url: "wss://secure.freedomledger.com/ws", location: "Toronto, Canada"},
 ];
 
 export const settingsAPIs = {
