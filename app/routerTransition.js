@@ -43,8 +43,8 @@ const filterAndSortURLs = (count, latencies) => {
         /* Use all the remaining urls if count = 0 */
         if (!count) return true;
 
-        /* Only keep the nodes we were able to connect to */
-        return !!latencies[a.url];
+        /* Only keep the nodes we were able to connect to or that are not in the latency cache yet */
+        return !!latencies[a.url] || typeof latencies[a.url] === "undefined";
     })
     .sort((a, b) => {
         return latencies[a.url] - latencies[b.url];
