@@ -27,7 +27,7 @@ class TableHeader extends React.Component {
                     <th style={{paddingLeft: 10, textAlign: this.props.leftAlign ? "left" : ""}}><Translate className="header-sub-title" content="exchange.price" /></th>
                     <th style={this.props.leftAlign ? {textAlign: "left"} : null}>{baseSymbol ? <span className="header-sub-title"><AssetName dataPlace="top" name={quoteSymbol} /></span> : null}</th>
                     <th style={this.props.leftAlign ? {textAlign: "left"} : null}>{baseSymbol ? <span className="header-sub-title"><AssetName dataPlace="top" name={baseSymbol} /></span> : null}</th>
-                    <th style={{width: "28%", textAlign: this.props.leftAlign ? "left" : ""}}><Translate className="header-sub-title" content="transaction.expiration" /></th>
+                    {/*<th style={{width: "28%", textAlign: this.props.leftAlign ? "left" : ""}}><Translate className="header-sub-title" content="transaction.expiration" /></th>*/}
                     <th />
                 </tr>
             </thead>
@@ -85,12 +85,12 @@ class OrderRow extends React.Component {
                 </td>
                 <td>{utils.format_number(order[!isBid ? "amountForSale" : "amountToReceive"]().getAmount({real: true}), quote.get("precision"))} {amountSymbol}</td>
                 <td>{utils.format_number(order[!isBid ? "amountToReceive" : "amountForSale"]().getAmount({real: true}), base.get("precision"))} {valueSymbol}</td>
-                <td style={{width: "28%"}}>
-                    {isCall ? null : <FormattedDate
-                        value={order.expiration}
-                        format="short"
-                    />}
-                </td>
+                {/*<td style={{width: "28%"}}>*/}
+                    {/*{isCall ? null : <FormattedDate*/}
+                        {/*value={order.expiration}*/}
+                        {/*format="short"*/}
+                    {/*/>}*/}
+                {/*</td>*/}
                 <td className="text-center" style={{ padding: "2px 5px"}}>
                     {isCall ? null : <a style={{marginRight: 0}} className="order-cancel" onClick={this.props.onCancel}>
                         <Icon name="cross-circle" className="icon-14px" />
