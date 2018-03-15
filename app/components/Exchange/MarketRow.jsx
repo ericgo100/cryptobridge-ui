@@ -136,11 +136,13 @@ class MarketRow extends React.Component {
                     utils.get_asset_price(stats.close.quote.amount, quote, stats.close.base.amount, base, true) :
                     utils.get_asset_price(price.quote.amount, quote, price.base.amount, base, true);
 
-                let highPrecisionAssets = ["BTC", "OPEN.BTC", "TRADE.BTC", "GOLD", "SILVER"];
-                let precision = 6;
-                if (highPrecisionAssets.indexOf(base.get("symbol")) !== -1) {
-                    precision = 8;
-                }
+                // let highPrecisionAssets = ["BTC", "OPEN.BTC", "TRADE.BTC", "GOLD", "SILVER"];
+                // let precision = 6;
+                // if (highPrecisionAssets.indexOf(base.get("symbol")) !== -1) {
+                //     precision = 8;
+                // }
+
+                let precision = 8; // we always want 8 digits as precision
 
 
                 return (
