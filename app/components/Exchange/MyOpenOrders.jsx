@@ -33,7 +33,7 @@ class TableHeader extends React.Component {
                     <th style={this.props.leftAlign ? {textAlign: "left"} : null}>{baseSymbol ? <span className="header-sub-title"><AssetName dataPlace="top" name={quoteSymbol} /></span> : null}</th>
                     <th style={this.props.leftAlign ? {textAlign: "left"} : null}>{baseSymbol ? <span className="header-sub-title"><AssetName dataPlace="top" name={baseSymbol} /></span> : null}</th>
                     {/*<th style={{width: "28%", textAlign: this.props.leftAlign ? "left" : ""}}><Translate className="header-sub-title" content="transaction.expiration" /></th>*/}
-                    <th>{isMyAccount && onCancelAll ? cancelAllAction : null}</th>
+                    <th>{onCancelAll ? cancelAllAction : null}</th>
                 </tr>
             </thead>
         ) : (
