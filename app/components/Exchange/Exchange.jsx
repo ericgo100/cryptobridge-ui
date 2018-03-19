@@ -507,6 +507,19 @@ class Exchange extends React.Component {
         }
     }
 
+    _cancelLimitOrders(orderIDs) {
+        const { currentAccount } = this.props;
+
+        MarketsActions.cancelLimitOrders(
+            currentAccount.get("id"),
+            orderIDs
+        ).then(()=>{
+            console.log("cancel orders success", orderIDs);
+        }).catch(err => {
+            console.log("cancel orders error:", err);
+        })
+    }
+
     _cancelLimitOrder(orderID, e) {
         e.preventDefault();
         let { currentAccount } = this.props;
@@ -1284,6 +1297,7 @@ class Exchange extends React.Component {
                                     baseSymbol={baseSymbol}
                                     quoteSymbol={quoteSymbol}
                                     onCancel={this._cancelLimitOrder.bind(this)}
+                                    onCancelAll={this._cancelLimitOrders.bind(this)}
                                     flipMyOrders={this.props.viewSettings.get("flipMyOrders")}
                                     feedPrice={this.props.feedPrice}
                                 />) : null}
