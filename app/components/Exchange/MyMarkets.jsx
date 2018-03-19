@@ -162,10 +162,14 @@ class MarketGroup extends React.Component {
         console.log(base);
         let marketRows = markets
             .map(market => {
+                const name = market.base !== base && market.quote !== base ?
+                    <span><AssetName name={market.quote} /> : <AssetName name={market.base} /></span> :
+                    <AssetName dataPlace="left" name={market.base === base ? market.quote : market.base} />;
+
                 return (
                     <MarketRow
                         key={market.id}
-                        name={base === "OTHER" ? <span><AssetName name={market.quote} /> : <AssetName name={market.base} /></span> : <AssetName dataPlace="left" name={market.quote} />}
+                        name={name}
                         quote={market.quote}
                         base={market.base}
                         columns={columns}
@@ -512,15 +516,39 @@ class MyMarkets extends React.Component {
     }
 
     render() {
+
         let {starredMarkets, defaultMarkets, marketStats, columns, searchAssets, assetsLoading,
             preferredBases, core, current, viewSettings, listHeight, onlyStars, userMarkets} = this.props;
         let {activeMarketTab, activeTab, lookupQuote, lookupBase} = this.state;
+
+        const marketGroups = {
+            "BRIDGE.BTC": [],
+            "BRIDGE.BCO": [],
+            "BRIDGE.LTC": [],
+            "BRIDGE.SMART": [],
+            "BRIDGE.ZNY": [],
+            "BRIDGE.MONA": [],
+            "BTS": [],
+            "OTHER": [],
+        };
+
+        const activeMarketGroup = Object.keys(marketGroups)[activeMarketTab];
+
         let otherMarkets = <tr></tr>;
         const myMarketTab = activeTab === "my-market";
         const isFilteredMarket = (m) => {
             const ID = m.quote + "_" + m.base;
             if (!!this.state.myMarketFilter) {
-                return m.quote.replace('BRIDGE.', '').indexOf(this.state.myMarketFilter) !== -1;
+                const matchesBase = m.base.replace("BRIDGE.", "").indexOf(this.state.myMarketFilter) !== -1;
+                const matchesQuote = m.quote.replace("BRIDGE.", "").indexOf(this.state.myMarketFilter) !== -1;
+
+                if(activeMarketGroup === m.base) {
+                    return matchesQuote;
+                }
+                if(activeMarketGroup === m.quote) {
+                    return matchesBase;
+                }
+                return matchesBase || matchesQuote;
             }
             if (onlyStars && !starredMarkets.has(ID)) {
                 return false;
@@ -686,35 +714,23 @@ class MyMarkets extends React.Component {
             .toArray();
         }
 
-        let btcMarkets = [];
-        let btsMarkets = [];
-        let myOtherMarkets = [];
-
         this.state.markets && this.state.markets
             .filter(isFilteredMarket)
             .map((m) => {
-                if (m.base === 'BRIDGE.BTC') {
-                    btcMarkets.push(m);
+                if (marketGroups[m.base]) {
+                    marketGroups[m.base].push(m);
                 }
-                else if (m.base === 'BTS') {
-                    btsMarkets.push(m);
+                if(marketGroups[m.quote]) {
+                    marketGroups[m.quote].push(m);
+                }
+                if(!marketGroups[m.base] && !marketGroups[m.quote]) {
+                    marketGroups.OTHER.push(m);
+                }
+            });
 
-            } else {
-                myOtherMarkets.push(m);
-            }
-        });
+        baseGroups = Object.assign(baseGroups, marketGroups);
 
-        baseGroups['OTHER'] = [];
-        baseGroups['OTHER'] =  myOtherMarkets;
-
-        baseGroups['BRIDGE.BTC'] = [];
-        baseGroups['BRIDGE.BTC'] =  btcMarkets;
-
-        baseGroups['BTS'] = [];
-        baseGroups['BTS'] =  btsMarkets;
-
-
-        const hasOthers = otherMarkets && otherMarkets.length;
+        const hasOthers = baseGroups && baseGroups.OTHER.length;
 
         let hc = "mymarkets-header clickable";
         let starClass = cnames(hc, {inactive: !myMarketTab});
