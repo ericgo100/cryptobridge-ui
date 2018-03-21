@@ -1,0 +1,70 @@
+$font-path: "~react-widgets/lib/fonts";
+$img-path: "~react-widgets/lib/img";
+
+$widget-bg:                 #3e3e3e !default;
+$widget-border:             #3e3e3e !default;
+
+$input-color:               #ffffff !default;
+$text-color:                #ffffff !default;
+
+$input-border:              #3e3e3e !default;
+
+$state-bg-hover:            #5d5d5d !default;
+
+@import "~react-widgets/lib/scss/react-widgets";
+
+.darkTheme {
+  .rw-filter-input {
+    border-color: #5d5d5d;
+  }
+}
+
+.cryptoBridgeTheme {
+  .rw-filter-input {
+    border-color: #000000;
+  }
+
+  .rw-widget-container {
+    background-color: #ebebeb;
+
+    &:hover {
+      background-color: #ebebeb;
+    }
+  }
+
+  .rw-input {
+    color: #242424;
+  }
+
+  .rw-btn {
+    color: #242424;
+  }
+
+  .rw-popup {
+    background-color: #ffffff;
+  }
+
+  .rw-list-option {
+    color: #242424;
+
+    border: 1px solid transparent;
+
+    &:hover {
+      background-color: #ebebeb;
+    }
+
+    &.rw-state-focus {
+      background-color: #ebebeb;
+      color: #242424;
+      border: 1px solid transparent;
+    }
+
+    &.rw-state-selected {
+      background-color: #aed1ef;
+
+      &:hover {
+        background-color: #aed1ef;
+      }
+    }
+  }
+}

@@ -2,6 +2,7 @@ import React from "react";
 import ChainTypes from "../Utility/ChainTypes";
 import BindToChainState from "../Utility/BindToChainState";
 import AssetName from "../Utility/AssetName";
+import AssetImage from "../Utility/AssetImage";
 import cnames from "classnames";
 import MarketsActions from "actions/MarketsActions";
 import MarketsStore from "stores/MarketsStore";
@@ -29,10 +30,6 @@ class MarketCard extends React.Component {
         super();
 
         this.statsInterval = null;
-
-        this.state = {
-            imgError: false
-        };
     }
 
     _checkStats(newStats = {close: {}}, oldStats = {close: {}}) {
@@ -47,8 +44,7 @@ class MarketCard extends React.Component {
         return (
             this._checkStats(np.marketStats, this.props.marketStats) ||
             np.base.get("id") !== this.props.base.get("id") ||
-            np.quote.get("id") !== this.props.quote.get("id") ||
-            ns.imgError !== this.state.imgError
+            np.quote.get("id") !== this.props.quote.get("id")
         );
     }
 
@@ -67,31 +63,9 @@ class MarketCard extends React.Component {
         this.context.router.push(`/market/${this.props.base.get("symbol")}_${this.props.quote.get("symbol")}`);
     }
 
-    _onError(imgName) {
-        if (!this.state.imgError) {
-            this.refs[imgName.toLowerCase()].src = "asset-symbols/bco.png";
-            this.setState({
-                imgError: true
-            });
-        }
-
-    }
-
     render() {
-        let {hide, isLowVolume, base, quote, marketStats, img} = this.props;
+        let {hide, isLowVolume, base, quote, marketStats, marketId} = this.props;
         if (isLowVolume || hide) return null;
-
-
-        function getImageName(asset) {
-            if (img) {
-                return img;
-            }
-            let symbol = asset.get("symbol");
-            if (symbol === "OPEN.BTC") return symbol;
-            let imgName = asset.get("symbol").split(".");
-            return imgName.length === 2 ? imgName[1] : imgName[0];
-        }
-        let imgName = getImageName(base);
 
         // let marketID = base.get("symbol") + "_" + quote.get("symbol");
         // let stats = marketStats;
@@ -101,9 +75,7 @@ class MarketCard extends React.Component {
             <div className={cnames("grid-block no-overflow fm-container", this.props.className)} onClick={this.goToMarket.bind(this)}>
                 <div className="grid-block vertical shrink">
                     <div className="v-align">
-
-                        {!img ? <img className="align-center" ref={imgName.toLowerCase()} onError={this._onError.bind(this, imgName)} style={{maxWidth: 70}} src={`${__BASE_URL__}asset-symbols/${imgName.toLowerCase()}.png`} /> :
-                        <img className="align-center" ref={imgName.toLowerCase()} onError={this._onError.bind(this, imgName)} style={{maxWidth: 70}} src={`${imgName}`} />  }
+                        <AssetImage style={{maxWidth:70,marginRight:"10px"}} marketId={marketId} />
                     </div>
                 </div>
                 <div className="grid-block vertical no-overflow">

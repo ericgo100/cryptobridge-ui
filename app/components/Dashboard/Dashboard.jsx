@@ -1,5 +1,6 @@
 import React from "react";
 import Immutable from "immutable";
+import { connect } from "alt-react";
 import DashboardList from "./DashboardList";
 import { RecentTransactions } from "../Account/RecentTransactions";
 import Translate from "react-translate-component";
@@ -10,37 +11,19 @@ import LoadingIndicator from "../LoadingIndicator";
 import LoginSelector from "../LoginSelector";
 import cnames from "classnames";
 import SettingsActions from "actions/SettingsActions";
-import { cryptoBridgeAPIs } from "../../api/apiConfig";
+import CryptoBridgeStore from "stores/CryptoBridgeStore";
+import CryptoBridgeActions from "actions/CryptoBridgeActions";
 
 class Dashboard extends React.Component {
 
     constructor(props) {
         super();
 
-
-
-
-        let marketsByChain = {
-            "4018d784":[
-                ["BRIDGE.BTC", "BRIDGE.BCO"],
-                ["BRIDGE.BTC", "BRIDGE.BCH"],
-                ["BRIDGE.BCH", "BRIDGE.BCO"],
-                ["BTS", "BRIDGE.BCO"],
-
-            ],
-            "39f5e2ed": [
-                ["TEST", "PEG.FAKEUSD"],
-                ["TEST", "BTWTY"]
-            ]
-        };
-        let chainID = Apis.instance().chain_id;
-        if (chainID) chainID = chainID.substr(0, 8);
-
         this.state = {
             width: null,
             showIgnored: false,
-            news: null,
-            featuredMarkets: marketsByChain[chainID] || marketsByChain["4018d784"],
+            news: props.cryptoBridgeNews,
+            featuredMarkets: props.cryptoBridgeMarkets,
             newAssets: [
 
             ],
@@ -51,47 +34,35 @@ class Dashboard extends React.Component {
         // this._sortMarketsByVolume = this._sortMarketsByVolume.bind(this);
     }
 
+    componentWillMount() {
+        CryptoBridgeActions.getMarkets.defer();
+        CryptoBridgeActions.getNews.defer();
+    }
+
     componentDidMount() {
         this._setDimensions();
 
         window.addEventListener("resize", this._setDimensions, {capture: false, passive: true});
+    }
 
-        const url = cryptoBridgeAPIs.BASE + cryptoBridgeAPIs.MARKETS;
+    componentWillReceiveProps(nextProps) {
 
-        fetch(url).then(reply => reply.json().then(result => {
-            let markets = [];
-            result.map((m) => {
-                if ( (m.base === 'BRIDGE.BTC') && (m.blacklisted !== true) ) {
-                    markets.push([m.base, m.quote, m.img]);
-                }
-                if ( (m.base === 'BRIDGE.ZNY') && (m.blacklisted !== true) ) {
-                    markets.push([m.base, m.quote, m.img]);
-                }
-                if ( (m.base === 'BRIDGE.MONA') && (m.blacklisted !== true) ) {
-                    markets.push([m.base, m.quote, m.img]);
-                }
-                if ( (m.base === 'BRIDGE.DOGE') && (m.blacklisted !== true) ) {
-                    markets.push([m.base, m.quote, m.img]);
-                }
-
-            });
-            this.setState({featuredMarkets: markets});
-        })).catch(err => {
-
-        });
-
-        const newsUrl = 'https://crypto-bridge.org/news.json';
-
-        fetch(newsUrl).then(reply => reply.json().then(news => {
-            this.setState({news: news.content});
-        })).catch(err => {
-        });
+        if(
+            this.props.cryptoBridgeMarkets !== nextProps.cryptoBridgeMarkets ||
+            this.props.cryptoBridgeNews !== nextProps.cryptoBridgeNews
+        ) {
+            this.setState({
+                featuredMarkets: nextProps.cryptoBridgeMarkets,
+                news: nextProps.cryptoBridgeNews
+            })
+        }
 
     }
 
     shouldComponentUpdate(nextProps, nextState) {
         return (
             !utils.are_equal_shallow(nextState.featuredMarkets, this.state.featuredMarkets) ||
+            !utils.are_equal_shallow(nextState.cryptoBridgeMarkets, this.state.featuredMarkets) ||
             !utils.are_equal_shallow(nextProps.lowVolumeMarkets, this.props.lowVolumeMarkets) ||
             !utils.are_equal_shallow(nextState.newAssets, this.state.newAssets) ||
             nextProps.linkedAccounts !== this.props.linkedAccounts ||
@@ -136,6 +107,10 @@ class Dashboard extends React.Component {
         let { linkedAccounts, myIgnoredAccounts, accountsReady, passwordAccount } = this.props;
         let {width, showIgnored, featuredMarkets, newAssets, currentEntry} = this.state;
 
+        if(Immutable.Map.isMap(featuredMarkets)) {
+            featuredMarkets = Array.from(featuredMarkets.valueSeq().map(m => [m.base, m.quote, m.img]));
+        }
+
         if (passwordAccount && !linkedAccounts.has(passwordAccount)) {
             linkedAccounts = linkedAccounts.add(passwordAccount);
         }
@@ -171,10 +146,9 @@ class Dashboard extends React.Component {
                     className={className}
                     quote={pair[0]}
                     base={pair[1]}
-                    invert={pair[2]}
+                    invert={pair[2] === true}
                     isLowVolume={isLowVolume}
                     hide={validMarkets > 20}
-                    img={pair[2]}
                 />
             );
         }).filter(a => !!a);
@@ -202,6 +176,11 @@ class Dashboard extends React.Component {
                     </div>
                     <div className="grid-block small-up-1 medium-up-3 large-up-4 no-overflow fm-outer-container">
                         {markets}
+                        {featuredMarkets.length <= 1 &&
+                            <div className="grid-block no-overflow fm-container">
+                                <LoadingIndicator type="three-bounce" />
+                            </div>
+                        }
                     </div>
 
                     {accountCount ? (
@@ -246,4 +225,14 @@ class Dashboard extends React.Component {
     }
 }
 
-export default Dashboard;
+export default connect(Dashboard, {
+    listenTo() {
+        return [CryptoBridgeStore];
+    },
+    getProps() {
+        return {
+            cryptoBridgeMarkets: CryptoBridgeStore.getState().markets,
+            cryptoBridgeNews: CryptoBridgeStore.getState().news
+        };
+    }
+});
