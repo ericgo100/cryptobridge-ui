@@ -18,8 +18,13 @@ import {MarketPrice} from "../Utility/MarketPrice";
 class TableHeader extends React.Component {
 
     render() {
-        let {baseSymbol, quoteSymbol, dashboard, isMyAccount, settings} = this.props;
+        let {baseSymbol, quoteSymbol, dashboard, isMyAccount, settings, onCancelAll} = this.props;
         let preferredUnit = settings ? settings.get("unit") : "1.3.0";
+
+        const cancelAllAction = onCancelAll &&
+            <a className="order-cancel" onClick={onCancelAll.bind(this)}>
+                <Icon name="cross-circle" className="icon-14px" />
+            </a>;
 
         return !dashboard ? (
             <thead>
@@ -28,7 +33,7 @@ class TableHeader extends React.Component {
                     <th style={this.props.leftAlign ? {textAlign: "left"} : null}>{baseSymbol ? <span className="header-sub-title"><AssetName dataPlace="top" name={quoteSymbol} /></span> : null}</th>
                     <th style={this.props.leftAlign ? {textAlign: "left"} : null}>{baseSymbol ? <span className="header-sub-title"><AssetName dataPlace="top" name={baseSymbol} /></span> : null}</th>
                     {/*<th style={{width: "28%", textAlign: this.props.leftAlign ? "left" : ""}}><Translate className="header-sub-title" content="transaction.expiration" /></th>*/}
-                    <th />
+                    <th>{onCancelAll ? cancelAllAction : null}</th>
                 </tr>
             </thead>
         ) : (
@@ -199,6 +204,7 @@ class MyOpenOrders extends React.Component {
 
         const orders = this._getOrders();
         let emptyRow = <tr><td style={{textAlign: "center"}} colSpan="5"><Translate content="account.no_orders" /></td></tr>;
+        const cancellableOrderIDs = [];
 
         let bids = orders.filter(a => {
             return a.isBid();
@@ -206,6 +212,9 @@ class MyOpenOrders extends React.Component {
             return b.getPrice() - a.getPrice();
         }).map(order => {
             let price = order.getPrice();
+            if(!order.isCall()) {
+                cancellableOrderIDs.push(order.id);
+            }
             return <OrderRow price={price} key={order.id} order={order} base={base} quote={quote} onCancel={this.props.onCancel.bind(this, order.id)}/>;
         });
 
@@ -215,6 +224,9 @@ class MyOpenOrders extends React.Component {
             return a.getPrice() - b.getPrice();
         }).map(order => {
             let price = order.getPrice();
+            if(!order.isCall()) {
+                cancellableOrderIDs.push(order.id);
+            }
             return <OrderRow price={price} key={order.id} order={order} base={base} quote={quote} onCancel={this.props.onCancel.bind(this, order.id)}/>;
         });
 
@@ -232,6 +244,8 @@ class MyOpenOrders extends React.Component {
             return a.props.price - b.props.price;
         });
 
+        const onCancelAll = this.props.onCancelAll && cancellableOrderIDs.length > 1 ? this.props.onCancelAll.bind(this, cancellableOrderIDs) : null;
+
         return (
             <div
                 style={{marginBottom: "15px"}}
@@ -244,7 +258,7 @@ class MyOpenOrders extends React.Component {
                         <Translate content="exchange.my_orders" />
                     </div>
                     <table className="table order-table table-hover">
-                        <TableHeader leftAlign type="sell" baseSymbol={baseSymbol} quoteSymbol={quoteSymbol}/>
+                        <TableHeader leftAlign type="sell" baseSymbol={baseSymbol} quoteSymbol={quoteSymbol} onCancelAll={onCancelAll}/>
                     </table>
 
                     <div className="grid-block no-padding market-right-padding" ref="asks" style={{overflow: "hidden", maxHeight: 200}}>
