@@ -1,6 +1,6 @@
 {
   "name": "CryptoBridge",
-  "version": "0.10.5",
+  "version": "0.11.0",
   "description": "Advanced wallet interface for the BitShares financial blockchain.",
   "homepage": "https://github.com/bitshares/bitshares-ui",
   "author": "Sigve Kvalsvik <kvalsvik.crypto@gmail.com>",
