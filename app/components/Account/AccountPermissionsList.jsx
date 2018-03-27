@@ -226,4 +226,4 @@ class AccountPermissionsList extends React.Component {
 
 }
 
-export default BindToChainState(AccountPermissionsList, {keep_updating: true});
+export default BindToChainState(AccountPermissionsList, {autosubscribe: false});

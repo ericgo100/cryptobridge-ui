@@ -141,7 +141,7 @@ const willTransitionTo = (nextState, replaceState, callback, appInit=true) => { 
         }
 
         return Promise.all([db, SettingsStore.init()]).then(() => {
-            let chainStoreResetPromise = chainChanged ? ChainStore.resetCache() : Promise.resolve();
+            let chainStoreResetPromise = chainChanged ? ChainStore.resetCache(false) : Promise.resolve();
             return chainStoreResetPromise.then(() => {
                 return Promise.all([
                     PrivateKeyActions.loadDbData().then(()=> {
