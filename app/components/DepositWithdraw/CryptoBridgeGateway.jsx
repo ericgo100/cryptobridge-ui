@@ -1,7 +1,10 @@
 import React from "react";
 import CryptoBridgeGatewayDepositRequest from "../DepositWithdraw/cryptobridge/CryptoBridgeGatewayDepositRequest";
+import { DropdownList } from "react-widgets";
 import Translate from "react-translate-component";
 import { connect } from "alt-react";
+import CryptoBridgeStore from "stores/CryptoBridgeStore";
+import CryptoBridgeActions from "actions/CryptoBridgeActions";
 import SettingsStore from "stores/SettingsStore";
 import SettingsActions from "actions/SettingsActions";
 import { RecentTransactions, TransactionWrapper } from "components/Account/RecentTransactions";
@@ -9,6 +12,8 @@ import Immutable from "immutable";
 import cnames from "classnames";
 import LoadingIndicator from "../LoadingIndicator";
 import { cryptoBridgeAPIs } from "../../api/apiConfig";
+import AssetName from "../Utility/AssetName";
+import AssetImage from "../Utility/AssetImage";
 
 class CryptoBridgeGateway extends React.Component {
     constructor(props) {
@@ -56,14 +61,15 @@ class CryptoBridgeGateway extends React.Component {
     //     return true;
     // }
 
-    onSelectCoin(e) {
-        this.setState({
-            activeCoin: e.target.value
-        });
+    onSelectCoin(selectedCoin) {
+
+        const activeCoin = (this.state.action === "deposit" ? selectedCoin.backingCoinType : selectedCoin.symbol).toUpperCase().replace('BRIDGE.', '');
 
         let setting = {};
-        setting[`activeCoin_${this.props.provider}_${this.state.action}`] = e.target.value;
+        setting[`activeCoin_${this.props.provider}_${this.state.action}`] = activeCoin;
         SettingsActions.changeViewSetting(setting);
+
+        this.setState({ activeCoin });
     }
 
     changeAction(type) {
@@ -94,21 +100,9 @@ class CryptoBridgeGateway extends React.Component {
             }
         });
 
-        let coinOptions = filteredCoins.map(coin => {
-            let option = action === "deposit" ? coin.backingCoinType.toUpperCase().replace('BRIDGE.', '') : coin.symbol.toUpperCase().replace('BRIDGE.', '')
-            let name = coin.name;
-            let displayName = option;
-            if (displayName === 'DV') displayName = 'DV7';
-            if (displayName === 'NLC') displayName = 'NLC2';
-            return <option value={option} key={coin.symbol}>{displayName} - {name}</option>;
-        }).filter(a => {
-            return a !== null;
-        });
-
         let coin = filteredCoins.filter(coin => {
             return (action === "deposit" ? coin.backingCoinType.toUpperCase().replace('BRIDGE.', '') === activeCoin : coin.symbol.toUpperCase().replace('BRIDGE.', '') === activeCoin);
         })[0];
-        console.log('ACTIVE COIN: ' , activeCoin);
 
         if (!coin) coin = filteredCoins[0];
 
@@ -120,7 +114,15 @@ class CryptoBridgeGateway extends React.Component {
 
         let isDeposit = this.state.action === "deposit";
 
-        console.log('LOG:' , coin);
+        const CoinComponent = ({ item }) => {
+
+            return (
+                <span>
+                    <AssetImage style={{height:"24px",marginRight:"10px"}} name={item.symbol} />
+                    <strong><AssetName name={item.symbol} noTip={true} /></strong> ({item.name})
+                </span>
+            );
+        };
 
         return (
 
@@ -129,13 +131,15 @@ class CryptoBridgeGateway extends React.Component {
                     <div className="medium-4">
                         <div>
                             <label style={{minHeight: "2rem"}} className="left-label"><Translate content={"gateway.choose_" + action} />: </label>
-                            <select
-                                className="external-coin-types bts-select"
+                            <DropdownList
+                                filter
+                                data={filteredCoins}
+                                defaultValue={coin}
+                                valueComponent={CoinComponent}
+                                itemComponent={CoinComponent}
+                                textField={(item) => { return item.symbol.replace(/^BRIDGE\./, ''); }}
                                 onChange={this.onSelectCoin.bind(this)}
-                                value={activeCoin}
-                            >
-                                {coinOptions}
-                            </select>
+                            />
                         </div>
                     </div>
 

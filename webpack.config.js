@@ -192,7 +192,7 @@ module.exports = function(env) {
                     use: scssLoaders
                 },
                 {
-                    test: /\.png$/,
+                    test: /(\.png|\.gif|\.ttf|\.eot|rw-widgets\.svg)$/,
                     exclude:[path.resolve(root_dir, "app/assets/asset-symbols"), path.resolve(root_dir, "app/assets/language-dropdown/img")],
                     use: [
                         {

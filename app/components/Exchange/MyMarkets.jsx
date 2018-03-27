@@ -8,12 +8,14 @@ import MarketRow from "./MarketRow";
 import SettingsStore from "stores/SettingsStore";
 import MarketsStore from "stores/MarketsStore";
 import AssetStore from "stores/AssetStore";
+import CryptoBridgeStore from "stores/CryptoBridgeStore";
 import ChainTypes from "../Utility/ChainTypes";
 import BindToChainState from "../Utility/BindToChainState";
 import AssetName from "../Utility/AssetName";
 import SettingsActions from "actions/SettingsActions";
 import AssetActions from "actions/AssetActions";
 import MarketsActions from "actions/MarketsActions";
+import CryptoBridgeActions from "actions/CryptoBridgeActions";
 import cnames from "classnames";
 import {debounce} from "lodash";
 import Icon from "../Icon/Icon";
@@ -21,7 +23,7 @@ import AssetSelector from "../Utility/AssetSelector";
 import counterpart from "counterpart";
 import LoadingIndicator from "../LoadingIndicator";
 import {ChainValidation} from "bitsharesjs/es";
-import { cryptoBridgeAPIs } from "../../api/apiConfig";
+
 
 let lastLookup = new Date();
 
@@ -33,7 +35,6 @@ class MarketGroup extends React.Component {
 
     constructor(props) {
         super();
-        console.log(props);
         this.state = this._getInitialState(props);
     }
 
@@ -159,7 +160,6 @@ class MarketGroup extends React.Component {
 
         let index = 0;
 
-        console.log(base);
         let marketRows = markets
             .map(market => {
                 const name = market.base !== base && market.quote !== base ?
@@ -311,11 +311,14 @@ class MyMarkets extends React.Component {
             nextProps.preferredBases !== this.props.preferredBases ||
             nextProps.onlyStars !== this.props.onlyStars ||
             nextProps.assetsLoading !== this.props.assetsLoading ||
-            nextProps.userMarkets !== this.props.userMarkets
+            nextProps.userMarkets !== this.props.userMarkets ||
+            nextProps.cryptoBridgeMarkets !== this.props.cryptoBridgeMarkets
         );
     }
 
     componentWillMount() {
+        CryptoBridgeActions.getMarkets.defer();
+
         if (this.props.setMinWidth) {
             window.addEventListener("resize", this._setMinWidth, {capture: false, passive: true});
         }
@@ -338,40 +341,7 @@ class MyMarkets extends React.Component {
         if (this.state.activeTab === "find-market") {
             this._lookupAssets("BRIDGE.", true);
         }
-
-        const url = cryptoBridgeAPIs.BASE + cryptoBridgeAPIs.MARKETS;
-
-        const defaultMarkets = [
-            {
-                id: 'BRIDGE.BCO_BRIDGE.BTC',
-                quote: 'BRIDGE.BCO',
-                base: 'BRIDGE.BTC'
-            },
-            {
-                id: 'BRIDGE.BCO_BRIDGE.BCH',
-                quote: 'BRIDGE.BCO',
-                base: 'BRIDGE.BCH'
-            },
-            {
-                id: 'BRIDGE.BCO_BTS',
-                quote: 'BRIDGE.BCO',
-                base: 'BTS'
-            },
-            {
-                id: 'BRIDGE.BCH_BRIDGE.BTC',
-                quote: 'BRIDGE.BCH',
-                base: 'BRIDGE.BTC'
-            }
-        ]
-
-        fetch(url).then(reply => reply.json().then(result => {
-            this.setState({markets: result});
-        })).catch(err => {
-            this.setState({markets: defaultMarkets});
-        });
     }
-
-
 
     componetWillUnmount() {
         if (this.props.setMinWidth) {
@@ -518,7 +488,7 @@ class MyMarkets extends React.Component {
     render() {
 
         let {starredMarkets, defaultMarkets, marketStats, columns, searchAssets, assetsLoading,
-            preferredBases, core, current, viewSettings, listHeight, onlyStars, userMarkets} = this.props;
+            preferredBases, core, current, viewSettings, listHeight, onlyStars, userMarkets, cryptoBridgeMarkets} = this.props;
         let {activeMarketTab, activeTab, lookupQuote, lookupBase} = this.state;
 
         const marketGroups = {
@@ -714,7 +684,7 @@ class MyMarkets extends React.Component {
             .toArray();
         }
 
-        this.state.markets && this.state.markets
+        cryptoBridgeMarkets && cryptoBridgeMarkets
             .filter(isFilteredMarket)
             .map((m) => {
                 if (marketGroups[m.base]) {
@@ -845,10 +815,11 @@ class MyMarketsWrapper extends React.Component {
 
 export default connect(MyMarketsWrapper, {
     listenTo() {
-        return [SettingsStore, MarketsStore, AssetStore];
+        return [SettingsStore, MarketsStore, AssetStore, CryptoBridgeStore];
     },
     getProps() {
         return {
+            cryptoBridgeMarkets: CryptoBridgeStore.getState().markets,
             starredMarkets: SettingsStore.getState().starredMarkets,
             defaultMarkets: SettingsStore.getState().defaultMarkets,
             viewSettings: SettingsStore.getState().viewSettings,

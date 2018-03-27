@@ -86,6 +86,14 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
         }
     }
 
+    componentDidMount() {
+        if(WalletDb.isLocked()) {
+            WalletUnlockActions.unlock().then(() => {
+                AccountActions.tryToSetCurrentAccount();
+            });
+        }
+    }
+
     _requestDepositAddress() {
         requestDepositAddress(this._getDepositObject());
     }
@@ -121,10 +129,6 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
     generateDepositAddress(deposit_address_fragment, deposit_memo, memoText, clipboardText ) {
 
       if (WalletDb.isLocked()) {
-           WalletUnlockActions.unlock().then(() => {
-               AccountActions.tryToSetCurrentAccount();
-           });
-
 
             return (
                 <div style={{padding: "10px 0", fontSize: "1.1rem", fontWeight: "bold"}}>
@@ -137,7 +141,6 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
                     </table>
                 </div>
             );
-
 
         } else {
 
@@ -316,7 +319,7 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
                                         <td style={depositRightCellStyle}>
                                             <AccountBalance
                                                 account={this.props.account.get("name")}
-                                                asset={this.props.receive_asset.get("symbol")}
+                                                asset={this.renameAssets(this.props.receive_asset.get("symbol"))}
                                                 replace={false}
                                             />
                                         </td>
@@ -335,8 +338,8 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
                     </div>
                     <div className="small-12 medium-7">
                         <Translate component="h4" content="gateway.deposit_inst" />
-                        <label className="left-label"><Translate unsafe content="gateway.deposit_to" asset={this.renameAssets(this.props.deposit_asset) } />:</label>
-                        <Translate component="span" className="label warning" content="gateway.deposit_to_warning" asset={<span style={{fontWeight:"bold"}}>{this.props.deposit_asset}</span>} />
+                        <label className="left-label"><Translate unsafe content="gateway.deposit_to" with={{ asset: this.renameAssets(this.props.deposit_asset) }} />:</label>
+                        <Translate component="span" className="label warning" content="gateway.deposit_to_warning" with={{ asset: <span style={{fontWeight:"bold"}}>{this.props.deposit_asset}</span> }} />
 
                             {this.state.loading ? <LoadingIndicator type="three-bounce"/> :
                                 this.generateDepositAddress(deposit_address_fragment, deposit_memo, memoText, clipboardText)
@@ -376,7 +379,7 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
                     </div>
                     <div className="small-12 medium-7">
                         <Translate component="h4" content="gateway.withdraw_inst" />
-                        <label className="left-label"><Translate content="gateway.withdraw_to" asset={this.props.deposit_asset} />:</label>
+                        <label className="left-label"><Translate content="gateway.withdraw_to" with={{ asset: this.props.deposit_asset}} />:</label>
                         <div className="button-group" style={{paddingTop: 20}}>
                             <button className="button success" style={{fontSize: "1.3rem"}} onClick={this.onWithdraw.bind(this)}><Translate content="gateway.withdraw_now" /> </button>
                         </div>

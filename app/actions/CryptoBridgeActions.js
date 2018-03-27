@@ -1,0 +1,96 @@
+import alt from "alt-instance";
+
+import { cryptoBridgeAPIs } from "../api/apiConfig";
+
+const API_MARKET_URL = cryptoBridgeAPIs.BASE + cryptoBridgeAPIs.MARKETS;
+const API_NEWS_URL = 'https://crypto-bridge.org/news.json';
+
+let news = null;
+let newsTTL = 60 * 60 * 1000; // 60 minutes
+
+const defaultMarkets = [
+    {
+        id: 'BRIDGE.BCO_BRIDGE.BTC',
+        quote: 'BRIDGE.BCO',
+        base: 'BRIDGE.BTC'
+    }
+];
+
+let markets = {
+    data: null
+};
+let marketsTTL = 60 * 60 * 1000; // 60 minutes
+
+class CryptoBridgeActions {
+
+    getMarkets() {
+
+        return (dispatch) => {
+            const now = new Date();
+
+            if (markets.lastFetched) {
+                if(now - markets.lastFetched < marketsTTL) {
+                    return false; // we just fetched the results, no need to update...
+                }
+            } else {
+                dispatch(defaultMarkets);
+            }
+
+            markets.lastFetched = new Date();
+
+            fetch(API_MARKET_URL).then(reply => reply.json().then(result => {
+
+                const marketWhiteList = ['BRIDGE.BTC', 'BRIDGE.ZNY', 'BRIDGE.MONA', 'BRIDGE.DOGE'];
+
+                markets = {
+                    lastFetched: new Date(),
+                    data: result.filter(m => marketWhiteList.indexOf(m.base) !== -1 && m.blacklisted !== true)
+                };
+
+                dispatch(markets.data);
+
+            })).catch(err => {
+                markets.lastFetched = null;
+            });
+        };
+    }
+
+    getAssets() {
+
+        return this.getMarkets();
+    }
+
+    getNews() {
+
+        return (dispatch) => {
+
+            const now = new Date();
+
+            if (news && (now - news.lastFetched) < newsTTL) {
+                return false;
+            }
+
+            news = {
+                lastFetched: new Date(),
+                data: null
+            };
+
+            fetch(API_NEWS_URL).then(reply => reply.json().then(news => {
+
+                news = {
+                    lastFetched: new Date(),
+                    data: news.content
+                };
+
+                dispatch(news.data);
+            })).catch(err => {
+                news = null;
+                dispatch(news);
+            });
+
+        }
+    }
+
+}
+
+export default alt.createActions(CryptoBridgeActions);
