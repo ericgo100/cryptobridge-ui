@@ -40,11 +40,9 @@ class CryptoBridgeActions {
 
             fetch(API_MARKET_URL).then(reply => reply.json().then(result => {
 
-                const marketWhiteList = ['BRIDGE.BTC', 'BRIDGE.ZNY', 'BRIDGE.MONA', 'BRIDGE.DOGE'];
-
                 markets = {
                     lastFetched: new Date(),
-                    data: result.filter(m => marketWhiteList.indexOf(m.base) !== -1 && m.blacklisted !== true)
+                    data: result.filter(m => m.blacklisted !== true)
                 };
 
                 dispatch(markets.data);
