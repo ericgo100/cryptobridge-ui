@@ -690,9 +690,11 @@ class MyMarkets extends React.Component {
                 if (marketGroups[m.base]) {
                     marketGroups[m.base].push(m);
                 }
+/*
                 if(marketGroups[m.quote]) {
                     marketGroups[m.quote].push(m);
                 }
+                */
                 if(!marketGroups[m.base] && !marketGroups[m.quote]) {
                     marketGroups.OTHER.push(m);
                 }
