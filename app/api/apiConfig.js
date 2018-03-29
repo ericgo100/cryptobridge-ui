@@ -46,12 +46,38 @@ const WSS_PROD_NODES = [
     {url: "wss://ca-central-1.bts.crypto-bridge.org", location: "Montreal, Canada"},
     {url: "wss://eu-west-2.bts.crypto-bridge.org/", location: "London, United Kingdom"},
     {url: "wss://eu-west-3.bts.crypto-bridge.org/", location: "Paris, France"},
-    {url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany"},
     {url: "wss://eu.openledger.info/ws", location: "Berlin, Germany"},
+    {url: "wss://bitshares.nu/ws", location: "Stockholm, Sweden"},
     {url: "wss://bit.btsabc.org/ws", location: "Hong Kong"},
-    {url: "wss://bts.transwiser.com/ws", location: "Hangzhou, China"},
-    {url: "wss://bitshares.dacplay.org:8089/ws", location:  "Hangzhou, China"},
+    {url: "wss://bts.ai.la/ws", location: "Hong Kong"},
+    {url: "wss://bitshares.apasia.tech/ws", location: "Bangkok, Thailand"},
+    {url: "wss://japan.bitshares.apasia.tech/ws", location: "Tokyo, Japan"},
+    {url: "wss://bitshares.dacplay.org/ws", location: "Hangzhou, China"},
+    {url: "wss://bitshares-api.wancloud.io/ws", location: "China"},
     {url: "wss://openledger.hk/ws", location: "Hong Kong"},
+    {url: "wss://bitshares.crypto.fans/ws", location: "Munich, Germany"},
+    {url: "wss://ws.gdex.top", location: "China"},
+    {url: "wss://dex.rnglab.org", location: "Netherlands"},
+    {url: "wss://dexnode.net/ws", location: "Dallas, USA"},
+    {url: "wss://kc-us-dex.xeldal.com/ws", location: "Kansas City, USA"},
+    {url: "wss://btsza.co.za:8091/ws", location: "Cape Town, South Africa"},
+    {url: "wss://api.bts.blckchnd.com", location: "Falkenstein, Germany"},
+    {url: "wss://api-ru.bts.blckchnd.com", location: "Moscow, Russia"},
+    {
+        url: "wss://eu.nodes.bitshares.ws",
+        location: "Central Europe - BitShares Infrastructure Program"
+    },
+    {
+        url: "wss://us.nodes.bitshares.ws",
+        location: "U.S. West Coast - BitShares Infrastructure Program"
+    },
+    {
+        url: "wss://sg.nodes.bitshares.ws",
+        location: "Singapore - BitShares Infrastructure Program"
+    },
+    {url: "wss://ws.winex.pro", location: "Singapore"},
+    {url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany"},
+    {url: "wss://bts.transwiser.com/ws", location: "Hangzhou, China"},
     {url: "wss://secure.freedomledger.com/ws", location: "Toronto, Canada"},
 ];
 
