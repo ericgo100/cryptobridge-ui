@@ -178,7 +178,7 @@ class SettingsStore {
 
             let bases = {
                 markets_4018d784: [ // BTS MAIN NET
-                    "BRIDGE.BTC", "BRIDGE.BCO", "BRIDGE.LTC", "BRIDGE.SMART", "BRIDGE.ZNY", "BRIDGE.MONA", "BTS", "OTHER"
+                    "BRIDGE.BTC", "BRIDGE.BCO", "BRIDGE.LTC", "BRIDGE.ZNY", "BRIDGE.MONA", "BTS", "OTHER"
                 ],
                 markets_39f5e2ed: [ // TESTNET
                     "TEST"
