@@ -53,7 +53,7 @@ module.exports = function(env) {
     var revision = process.env.CODEBUILD_RESOLVED_SOURCE_VERSION;
     if (!revision) {
         try {
-            revision = require("child_process").execSync("git rev-parse --short --verify HEAD").toString().substr(0, 7);
+            revision = require("child_process").execSync("git rev-parse --verify HEAD").toString();
         } catch(e) {
             throw new Error("Unable to retrieve Git revision!");
         }
@@ -64,7 +64,7 @@ module.exports = function(env) {
     var plugins = [
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.DefinePlugin({
-            APP_VERSION: JSON.stringify(`${pkg.version}-${revision}`),
+            APP_VERSION: JSON.stringify(`${pkg.version}-${revision.substr(0, 7)}`),
             __ELECTRON__: !!env.electron,
             __HASH_HISTORY__: !!env.hash,
             __BASE_URL__: JSON.stringify(baseUrl),
