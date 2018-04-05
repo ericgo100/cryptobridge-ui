@@ -55,7 +55,7 @@ module.exports = function(env) {
         try {
             revision = require("child_process").execSync("git rev-parse --short --verify HEAD").toString().substr(0, 7);
         } catch(e) {
-            revision = "unknown";
+            throw new Error("Unable to retrieve Git revision!");
         }
     }
 
