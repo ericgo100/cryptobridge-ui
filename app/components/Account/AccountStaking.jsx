@@ -40,10 +40,8 @@ class VestingBalance extends React.Component {
             earned = vb.policy[1].coin_seconds_earned;
             vestingPeriod = vb.policy[1].vesting_seconds;
 
-            let d = new Date(vb.policy[1].start_claim);
-            let d1 = new Date(vb.policy[1].start_claim);
-
-
+            let d = timeStringToDate(vb.policy[1].start_claim);
+            let d1 = timeStringToDate(vb.policy[1].start_claim);
 
             d1.setSeconds(d1.getSeconds() + vb.policy[1].vesting_seconds);
             available = false;
@@ -188,6 +186,16 @@ class AccountVesting extends React.Component {
             </div>
         );
     }
+}
+
+function timeStringToDate(time_string) {
+    if (!time_string) return new Date("1970-01-01T00:00:00.000Z");
+    if (!/Z$/.test(time_string)) {
+        //does not end in Z
+        // https://github.com/cryptonomex/graphene/issues/368
+        time_string = time_string + "Z";
+    }
+    return new Date(time_string);
 }
 
 AccountVesting.VestingBalance = VestingBalance;
