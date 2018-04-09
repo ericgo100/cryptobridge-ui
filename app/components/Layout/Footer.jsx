@@ -77,11 +77,15 @@ class Footer extends React.Component {
 
     _trackLatency(node, ping) {
 
-        if(node && ping && (node !== connectedNode || ping !== connectedNodePing) && window.ga) {
+        if(node && ping && (node !== connectedNode || ping !== connectedNodePing) && gtag) {
             connectedNode = node;
             connectedNodePing = ping;
 
-            window.ga("send", "event", "Node", "Connected Latency", connectedNode, connectedNodePing);
+            gtag("event", "Node", {
+                event_category: "Connected Latency",
+                event_label: connectedNode,
+                value: connectedNodePing
+            });
 
             try {
                 let secondBestNode = null;
@@ -99,7 +103,11 @@ class Footer extends React.Component {
                 });
 
                 if(secondBestNode && secondBestNodePing) {
-                    window.ga("send", "event", "Node", "Second Best Latency", secondBestNode, secondBestNodePing);
+                    gtag("event", "Node", {
+                        event_category: "Second Best Latency",
+                        event_label: secondBestNode,
+                        value: secondBestNodePing
+                    });
                 }
             } catch(e) {
                 console.warn("Could not specify second best node");
