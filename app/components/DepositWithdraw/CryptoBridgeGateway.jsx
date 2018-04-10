@@ -172,6 +172,11 @@ class CryptoBridgeGateway extends React.Component {
                             transactionFee={coin.transactionFee}
                             symbol={coin.symbol}
                             required_confirmations={coin.requiredConfirmations}
+                            deposit_fee_enabled={coin.depositFeeEnabled === true}
+                            deposit_fee_time_frame={coin.depositFeeTimeframe}
+                            deposit_fee_percentage={coin.depositFeePercentage}
+                            deposit_fee_minimum={coin.depositFeeMinimum}
+                            deposit_fee_percentage_low_amounts={coin.depositFeePercentageLowAmounts}
                             action={this.state.action}
                             url={cryptoBridgeAPIs.BASE}
                         />

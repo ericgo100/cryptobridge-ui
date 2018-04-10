@@ -1363,6 +1363,7 @@
     "website": "ウェブサイトに行く",
     "deposit_to": "%(asset)sを以下のアドレスに送ってください。",
     "deposit_to_warning": "警告: %(asset)s以外をこのアドレスに送った場合、残高に反映されず回復することもできません!",
+    "deposit_to_fee_warning": "注意: %(asset)sを%(fee_time_frame)s>分に1回以上の頻度で入金する場合、%(fee_percentage)s%の入金手数料が発生します (最小%(minimum)s %(asset)s)。%(fee_percentage_low_amounts)s%の入金手数料は1 %(asset)s未満の入金をした場合に課されます。",
     "required_confirmations": "入金残高反映に必要な確認回数",
     "add_funds": "あなたのCryptoBridgeアカウント<strong>%(account)s</strong>に素早く簡単に資金を追加します。",
     "withdraw_funds": "CryptoBridgeアカウントから外部の%(asset)sアカウントへ出金しようとしています。",

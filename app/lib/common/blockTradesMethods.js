@@ -124,7 +124,12 @@ export function getBackedCoins({allCoins, tradingPairs, backer}) {
                 supportsMemos: coins_by_type[coin_type.backingCoinType].supportsOutputMemos,
                 depositAllowed: isDepositAllowed,
                 withdrawalAllowed: isWithdrawalAllowed,
-                requiredConfirmations: coins_by_type[coin_type.backingCoinType].requiredConfirmations
+                requiredConfirmations: coins_by_type[coin_type.backingCoinType].requiredConfirmations,
+                depositFeeEnabled: coins_by_type[coin_type.backingCoinType].depositFeeEnabled,
+                depositFeeTimeframe: coins_by_type[coin_type.backingCoinType].depositFeeTimeframe,
+                depositFeePercentage: coins_by_type[coin_type.backingCoinType].depositFeePercentage,
+                depositFeeMinimum: coins_by_type[coin_type.backingCoinType].depositFeeMinimum,
+                depositFeePercentageLowAmounts: coins_by_type[coin_type.backingCoinType].depositFeePercentageLowAmounts
             });
         }});
     return blocktradesBackedCoins;
