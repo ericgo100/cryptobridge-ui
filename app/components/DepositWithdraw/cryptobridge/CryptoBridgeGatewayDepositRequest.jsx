@@ -37,11 +37,21 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
         deprecated_message: React.PropTypes.string,
         action: React.PropTypes.string,
         supports_output_memos: React.PropTypes.bool.isRequired,
-        required_confirmations: React.PropTypes.number
+        required_confirmations: React.PropTypes.number,
+        deposit_fee_enabled: React.PropTypes.bool.isRequired,
+        deposit_fee_time_frame: React.PropTypes.number,
+        deposit_fee_percentage: React.PropTypes.number,
+        deposit_fee_minimum: React.PropTypes.number,
+        deposit_fee_percentage_low_amounts: React.PropTypes.number
     };
 
     static defaultProps = {
-        required_confirmations: 0
+        required_confirmations: 0,
+        deposit_fee_enabled: false,
+        deposit_fee_time_frame: 0,
+        deposit_fee_percentage: 0,
+        deposit_fee_minimum: 0,
+        deposit_fee_percentage_low_amounts: 0
     }
 
     constructor(props) {
@@ -324,7 +334,7 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
                                             />
                                         </td>
                                     </tr>
-                                    {this.props.required_confirmations &&
+                                    {(this.props.required_confirmations > 0) &&
                                         <tr>
                                             <td><Translate content="gateway.required_confirmations" />:</td>
                                             <td style={depositRightCellStyle}>
@@ -339,11 +349,23 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
                     <div className="small-12 medium-7">
                         <Translate component="h4" content="gateway.deposit_inst" />
                         <label className="left-label"><Translate unsafe content="gateway.deposit_to" with={{ asset: this.renameAssets(this.props.deposit_asset) }} />:</label>
-                        <Translate component="span" className="label warning" content="gateway.deposit_to_warning" with={{ asset: <span style={{fontWeight:"bold"}}>{this.props.deposit_asset}</span> }} />
+                        <Translate component="span" className="left-label warning" content="gateway.deposit_to_warning" with={{ asset: <span style={{fontWeight:"bold"}}>{this.props.deposit_asset}</span> }} />
+                        {!!this.props.deposit_fee_enabled &&
+                            <div>
+                                <br/>
+                                <Translate component="span" className="left-label warning" content="gateway.deposit_to_fee_warning" with={{
+                                   asset: this.props.deposit_asset,
+                                   fee_time_frame: this.props.deposit_fee_time_frame,
+                                   fee_percentage: this.props.deposit_fee_percentage,
+                                   fee_percentage_low_amounts: this.props.deposit_fee_percentage_low_amounts,
+                                   fee_minimum: this.props.deposit_fee_minimum
+                               }}/>
+                            </div>
+                        }
 
-                            {this.state.loading ? <LoadingIndicator type="three-bounce"/> :
-                                this.generateDepositAddress(deposit_address_fragment, deposit_memo, memoText, clipboardText)
-                            }
+                        {this.state.loading ? <LoadingIndicator type="three-bounce"/> :
+                            this.generateDepositAddress(deposit_address_fragment, deposit_memo, memoText, clipboardText)
+                        }
 
                     </div>
                 </div>
