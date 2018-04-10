@@ -11,6 +11,9 @@ import SettingsActions from "actions/SettingsActions";
 import Icon from "../Icon/Icon";
 import counterpart from "counterpart";
 
+let connectedNode = null;
+let connectedNodePing = null;
+
 class Footer extends React.Component {
 
     static propTypes = {
@@ -72,6 +75,46 @@ class Footer extends React.Component {
         document.body.removeChild(a);
     }
 
+    _trackLatency(node, ping) {
+
+        if(node && ping && (node !== connectedNode || ping !== connectedNodePing) && gtag) {
+            connectedNode = node;
+            connectedNodePing = ping;
+
+            gtag("event", "Node", {
+                event_category: "Connected Latency",
+                event_label: connectedNode,
+                value: connectedNodePing
+            });
+
+            try {
+                let secondBestNode = null;
+                let secondBestNodePing = null;
+
+                const { apiLatencies } = SettingsStore.getState();
+
+                Object.keys(apiLatencies).forEach(url => {
+                    const apiLatenciesPing = parseInt(apiLatencies[url]);
+
+                    if(node !== url && (!secondBestNodePing || apiLatenciesPing < secondBestNodePing)) {
+                        secondBestNode = url;
+                        secondBestNodePing = apiLatenciesPing;
+                    }
+                });
+
+                if(secondBestNode && secondBestNodePing) {
+                    gtag("event", "Node", {
+                        event_category: "Second Best Latency",
+                        event_label: secondBestNode,
+                        value: secondBestNodePing
+                    });
+                }
+            } catch(e) {
+                console.warn("Could not specify second best node");
+            }
+        }
+    }
+
     render() {
         const { state } = this;
         const {synced} = this.props;
@@ -80,6 +123,9 @@ class Footer extends React.Component {
         // Current Node Details
         let currentNode = SettingsStore.getState().settings.get("activeNode");
         let currentNodePing = SettingsStore.getState().apiLatencies[currentNode];
+
+        // Track node details
+        this._trackLatency(currentNode, parseInt(currentNodePing));
 
         let block_height = this.props.dynGlobalObject.get("head_block_number");
         let version_match = APP_VERSION.match(/2\.0\.(\d\w+)/);

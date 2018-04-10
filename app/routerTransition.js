@@ -14,6 +14,8 @@ const STORAGE_KEY = "__graphene__";
 const ss = new ls(STORAGE_KEY);
 let latencyChecks;
 import counterpart from "counterpart";
+import sha256 from "js-sha256";
+import { settingsAPIs } from "api/apiConfig";
 
 // Actions
 import PrivateKeyActions from "actions/PrivateKeyActions";
@@ -43,14 +45,39 @@ const filterAndSortURLs = (count, latencies) => {
         /* Use all the remaining urls if count = 0 */
         if (!count) return true;
 
-        /* Only keep the nodes we were able to connect to or that are not in the latency cache yet */
-        return !!latencies[a.url] || typeof latencies[a.url] === "undefined";
+        /* Only keep the nodes we were able to connect to */
+        return !!latencies[a.url];
     })
     .sort((a, b) => {
         return latencies[a.url] - latencies[b.url];
     }).map(a => a.url);
     return urls;
 };
+
+const apiLatenciesInconsistentWithNodes = (apiLatencies, nodes) => {
+
+    let unknownNodesCount = 0;
+
+    Object.keys(apiLatencies).forEach(url => {
+        unknownNodesCount += nodes.find(node => {
+            return node.url === url;
+        }) === undefined ? 1 : 0;
+    });
+
+    return unknownNodesCount > 0;
+}
+
+const apiConfigInconsistent = () => {
+
+    const nodesConfigHash = sha256(JSON.stringify(settingsAPIs));
+    if(nodesConfigHash !== ss.get("nodesConfigHash", null)) { // apiConfig is inconsistent
+        ss.set("nodesConfigHash", nodesConfigHash);
+
+        return true;
+    }
+
+    return false;
+}
 
 
 let _connectInProgress = false;
@@ -71,13 +98,14 @@ const willTransitionTo = (nextState, replaceState, callback, appInit=true) => { 
         });
     };
 
+    const myNodes = SettingsStore.getState().defaults.apiServer;
     const apiLatencies = SettingsStore.getState().apiLatencies;
     latencyChecks = ss.get("latencyChecks", 1);
     let apiLatenciesCount = Object.keys(apiLatencies).length;
     let connectionStart;
 
     if (connect) ss.set("latencyChecks", latencyChecks + 1); // Every 15 connect attempts we refresh the api latency list
-    if (latencyChecks >= 5) {
+    if (latencyChecks >= 5 || apiLatenciesInconsistentWithNodes(apiLatencies, myNodes) || apiConfigInconsistent()) {
         apiLatenciesCount = 0;
         ss.set("latencyChecks", 0);
     }
@@ -90,9 +118,6 @@ const willTransitionTo = (nextState, replaceState, callback, appInit=true) => { 
     */
     let connectionString = SettingsStore.getSetting("apiServer");
     if (!connectionString) connectionString = urls[0].url;
-
-
-    const myNodes = SettingsStore.getState().defaults.apiServer;
 
     let found=0;
     myNodes.map((i) => {
