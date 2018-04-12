@@ -179,6 +179,7 @@ class CryptoBridgeGateway extends React.Component {
                             deposit_fee_percentage_low_amounts={coin.depositFeePercentageLowAmounts}
                             action={this.state.action}
                             url={cryptoBridgeAPIs.BASE}
+                            coin_info={coin.info}
                         />
                         <label className="left-label">Support</label>
                         <div><Translate content="gateway.support_block_cb" /><br /><br /><a href={"mailto:" + issuer.support}>{issuer.support}</a></div>

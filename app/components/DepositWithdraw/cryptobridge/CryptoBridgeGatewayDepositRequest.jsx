@@ -42,7 +42,8 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
         deposit_fee_time_frame: React.PropTypes.number,
         deposit_fee_percentage: React.PropTypes.number,
         deposit_fee_minimum: React.PropTypes.number,
-        deposit_fee_percentage_low_amounts: React.PropTypes.number
+        deposit_fee_percentage_low_amounts: React.PropTypes.number,
+        coin_info: React.PropTypes.arrayOf(React.PropTypes.object)
     };
 
     static defaultProps = {
@@ -51,7 +52,8 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
         deposit_fee_time_frame: 0,
         deposit_fee_percentage: 0,
         deposit_fee_minimum: 0,
-        deposit_fee_percentage_low_amounts: 0
+        deposit_fee_percentage_low_amounts: 0,
+        coin_info: []
     }
 
     constructor(props) {
@@ -152,7 +154,7 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
                 </div>
             );
 
-        } else {
+        } else if(clipboardText && clipboardText !== "unknown"){
 
             return (
                 <div style={{padding: "10px 0", fontSize: "1.1rem", fontWeight: "bold"}}>
@@ -301,6 +303,16 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
             var withdraw_memo_prefix = "";
         }
 
+        const getLabelClass = (type) => {
+            if(type === "warn" || type === "warning") {
+                return "warning";
+            }
+            if(type === "error" || type === "alert") {
+                return "alert";
+            }
+            return "information";
+        }
+
         if (this.props.action === "deposit") {
 
             const depositRightCellStyle = {
@@ -363,7 +375,17 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
                             </div>
                         }
 
-                        {this.state.loading ? <LoadingIndicator type="three-bounce"/> :
+                        {this.props.coin_info && this.props.coin_info.length > 0 ? (
+                            this.props.coin_info.map((info, i) => {
+                                if(!info.section || info.section === "deposit") {
+                                    return <div key={"depositInfo"+ i} style={{marginTop: "10px"}}>
+                                        <span className={"left-label " + getLabelClass(info.type)}>{info.text}</span>
+                                    </div>
+                                }
+                            })
+                        ) : null}
+
+                        {this.state.loading ? <div style={{marginTop: "10px"}}><LoadingIndicator type="three-bounce" /></div> :
                             this.generateDepositAddress(deposit_address_fragment, deposit_memo, memoText, clipboardText)
                         }
 
@@ -396,12 +418,24 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
                             </table>
                         </div>
 
+
                         {/*<p>When you withdraw {this.props.receive_asset.get("symbol")}, you will receive {this.props.deposit_asset} at a 1:1 ratio (minus fees).</p>*/}
 
                     </div>
                     <div className="small-12 medium-7">
                         <Translate component="h4" content="gateway.withdraw_inst" />
                         <label className="left-label"><Translate content="gateway.withdraw_to" with={{ asset: this.props.deposit_asset}} />:</label>
+
+                        {this.props.coin_info && this.props.coin_info.length > 0 ? (
+                            this.props.coin_info.map((info, i) => {
+                                if(!info.section || info.section === "withdraw") {
+                                    return <div key={"depositInfo"+ i} style={{marginTop: "10px"}}>
+                                        <span className={"left-label " + getLabelClass(info.type)}>{info.text}</span>
+                                    </div>
+                                }
+                            })
+                        ) : null}
+
                         <div className="button-group" style={{paddingTop: 20}}>
                             <button className="button success" style={{fontSize: "1.3rem"}} onClick={this.onWithdraw.bind(this)}><Translate content="gateway.withdraw_now" /> </button>
                         </div>
@@ -427,7 +461,8 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
                                 symbol={this.props.symbol}
                                 memo_prefix={withdraw_memo_prefix}
                                 modal_id={withdraw_modal_id}
-                                balance={this.props.account.get("balances").toJS()[this.props.receive_asset.get("id")]} />
+                                balance={this.props.account.get("balances").toJS()[this.props.receive_asset.get("id")]}
+                            />
                         </div>
                     </Modal>
                 </div>
