@@ -112,7 +112,6 @@ export function getBackedCoins({allCoins, tradingPairs, backer}) {
             let isDepositAllowed = allowed_outputs_by_input[coin_type.backingCoinType] && allowed_outputs_by_input[coin_type.backingCoinType][coin_type.coinType];
             let isWithdrawalAllowed = allowed_outputs_by_input[coin_type.coinType] && allowed_outputs_by_input[coin_type.coinType][coin_type.backingCoinType];
 
-
             blocktradesBackedCoins.push({
                 name: coins_by_type[coin_type.backingCoinType].name,
                 intermediateAccount: coins_by_type[coin_type.backingCoinType].intermediateAccount,
@@ -129,7 +128,8 @@ export function getBackedCoins({allCoins, tradingPairs, backer}) {
                 depositFeeTimeframe: coins_by_type[coin_type.backingCoinType].depositFeeTimeframe,
                 depositFeePercentage: coins_by_type[coin_type.backingCoinType].depositFeePercentage,
                 depositFeeMinimum: coins_by_type[coin_type.backingCoinType].depositFeeMinimum,
-                depositFeePercentageLowAmounts: coins_by_type[coin_type.backingCoinType].depositFeePercentageLowAmounts
+                depositFeePercentageLowAmounts: coins_by_type[coin_type.backingCoinType].depositFeePercentageLowAmounts,
+                info: coins_by_type[coin_type.backingCoinType].info
             });
         }});
     return blocktradesBackedCoins;
