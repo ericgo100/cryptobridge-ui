@@ -154,7 +154,7 @@ class CryptoBridgeGatewayDepositRequest extends React.Component {
                 </div>
             );
 
-        } else if(clipboardText && clipboardText !== "unknown"){
+        } else if(clipboardText){
 
             return (
                 <div style={{padding: "10px 0", fontSize: "1.1rem", fontWeight: "bold"}}>
