@@ -114,7 +114,7 @@ const WSS_PROD_NODES = [
 export const settingsAPIs = {
     DEFAULT_WS_NODE: "wss://fake.automatic-selection.com",
     WS_NODE_LIST: __TESTNET__ ? WSS_TEST_NODES : WSS_PROD_NODES,
-    DEFAULT_FAUCET: "https://api.crypto-bridge.org",
+    DEFAULT_FAUCET: __TESTNET__ ? "https://api.testnet.crypto-bridge.org" : "https://api.crypto-bridge.org",
     TESTNET_FAUCET: "https://api.testnet.crypto-bridge.org",
     RPC_URL: "https://openledger.info/api/"
 };
