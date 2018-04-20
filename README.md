@@ -1,4 +1,4 @@
-Cryptobridge-UI
+GAAGT.info-UI
 ============
 
 This is a light wallet that connects to a BitShares API provided by the *witness_node* executable.
@@ -7,7 +7,7 @@ It *stores all keys locally* in the browser, *never exposing your keys to anyone
 
 ## Getting started&emsp;
 
-CryptoBridge-UI depends node Node.js, and version 6+ is required.
+GAAGT.info-UI depends node Node.js, and version 6+ is required.
 
 On Ubuntu and OSX, the easiest way to install Node is to use the [Node Version Manager](https://github.com/creationix/nvm).
 
@@ -22,8 +22,8 @@ nvm use v6
 Once you have Node installed, you can clone the repo:
 
 ```
-git clone https://github.com/CryptoBridge/cryptobridge-ui.git
-cd cryptobridge-ui
+git clone https://github.com/GAAGT.info-UI/GAAGT.info-UI.git
+cd GAAGT.info-UI
 ```
 
 Before launching the GUI you will need to install the npm packages:
@@ -45,7 +45,7 @@ npm start
 Once the compilation is done the GUI will be available in your browser at: `localhost:8080` or `127.0.0.1:8080`. Hot Reloading is enabled so the browser will live update as you edit the source files.
 
 ## Testnet&emsp;
-By default cryptobridge-ui connects to the live BitShares network, but it's very easy to switch it to the testnet run by Xeroc. To do so, open the UI in a browser, go to Settings, then under Access, select the *Public Testnet Server* in the dropdown menu. You should also change the faucet if you need to create an account, the testnet faucet address is https://testnet.bitshares.eu.
+By default GAAGT.info-UI connects to the live BitShares network, but it's very easy to switch it to the testnet run by Xeroc. To do so, open the UI in a browser, go to Settings, then under Access, select the *Public Testnet Server* in the dropdown menu. You should also change the faucet if you need to create an account, the testnet faucet address is https://testnet.bitshares.eu.
 
 The UI will reload and connect to the testnet, where you can use the faucet to create an account and receive an initial sum of test BTS.
 
